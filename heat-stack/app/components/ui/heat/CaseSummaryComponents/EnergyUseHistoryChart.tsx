@@ -17,6 +17,9 @@ import NonHeatingUsage from './assets/NonHeatingUsage.png'
 import NotAllowedInCalculations from './assets/NotAllowedInCalculations.png'
 
 import { tr } from '@faker-js/faker'
+import { FormMetadata, getInputProps } from '@conform-to/react'
+import { Button } from '#/app/components/ui/button.tsx'
+import { Input } from '../../input.tsx'
 
 // type NaturalGasBillRecord = z.infer<typeof NaturalGasBillRecordZod>
 // const naturalGasBillRecord01: NaturalGasBillRecord = {
@@ -54,7 +57,7 @@ import { tr } from '@faker-js/faker'
 // 	naturalGasBillRecord04,
 // ]
 
-export function EnergyUseHistoryChart({ usage_data }: { usage_data: UsageDataSchema }) {
+export function EnergyUseHistoryChart({ usage_data, conform_form, fields }: { usage_data: UsageDataSchema, conform_form: FormMetadata<any>, fields: any }) {
 	const [billingRecords, setBillingRecords] = useState<BillingRecordsSchema>([])
 
 	useEffect(() => {
@@ -81,8 +84,12 @@ export function EnergyUseHistoryChart({ usage_data }: { usage_data: UsageDataSch
 		})
 	}
 
+	let usage_data_with_user_adjustments = "none"
+
+
 	return (
 		<Table id="EnergyUseHistoryChart">
+			<Input {...getInputProps(fields.usage_data_with_user_adjustments, { type: "text" })} />
 			<TableHeader>
 				<TableRow>
 					<TableHead className="w-[100px]">#</TableHead>
@@ -149,11 +156,13 @@ export function EnergyUseHistoryChart({ usage_data }: { usage_data: UsageDataSch
 									: '-'}
 							</TableCell>
 							<TableCell>
-								<Checkbox
-									checked={period.inclusion_override}
-									disabled={overrideCheckboxDisabled}
-									onClick={() => handleOverrideCheckboxChange(index)}
-								/>
+								<Button type='submit' className={ `${ period.inclusion_override ? "bg-blue-100" : "bg-red-100" }` }>
+									<Checkbox
+										checked={period.inclusion_override}
+										disabled={overrideCheckboxDisabled}
+										
+									/>
+								</Button>
 							</TableCell>
 						</TableRow>
 					)
